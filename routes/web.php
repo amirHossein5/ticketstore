@@ -18,6 +18,9 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::get('/purchase', function () {
+    return view('purchase');
+})->name('purchase');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
