@@ -22,6 +22,10 @@ Route::get('/purchase', function () {
     return view('purchase');
 })->name('purchase');
 
+Route::get('/orders/{order_code}', function () {
+    return view('orders.show');
+})->name('purchase');
+
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
