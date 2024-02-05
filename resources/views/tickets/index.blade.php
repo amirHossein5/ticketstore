@@ -24,7 +24,7 @@
                 </div>
             </div>
         @empty
-            No tickets found!
+            <p class="text-gray-200"> No tickets found! </p>
         @endforelse
     </section>
 </x-app-layout>
