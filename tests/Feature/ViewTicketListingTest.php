@@ -16,12 +16,11 @@ class ViewTicketListingTest extends TestCase
     /** @test */
     public function shows_list_of_tickets_ordered_by_created_at_desc(): void
     {
-        Ticket::factory(3)->create();
-        $expected = Ticket::orderBy('created_at', 'desc')->get();
+        $expected = Ticket::factory(3)->create();
 
         $response = $this->get('/');
 
-        $response->assertViewHas('tickets', $expected);
+        $response->assertViewHas('tickets', $expected->sortByDesc('created_at'));
         $response->assertSeeInOrder($expected->pluck('ulid')->toArray());
         $response->assertSeeInOrder($expected->pluck('title')->toArray());
     }
