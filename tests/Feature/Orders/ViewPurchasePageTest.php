@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class ViewCreateOrderPageTest extends TestCase
+class ViewPurchasePageTest extends TestCase
 {
     use RefreshDatabase;
 
