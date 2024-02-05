@@ -10,8 +10,8 @@ class TicketController extends Controller
 {
     public function index(): View
     {
-        $tickets = Ticket::orderBy('created_at', 'desc')
-            ->whereNotNull('published_at')
+        $tickets = Ticket::whereNotNull('published_at')
+            ->latest()
             ->get();
 
         return view('tickets.index', [

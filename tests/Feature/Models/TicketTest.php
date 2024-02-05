@@ -21,7 +21,7 @@ class TicketTest extends TestCase
     }
 
     /** @test */
-    public function formats_time_to_use_properly()
+    public function formats_time_to_use()
     {
         $ticket = Ticket::factory()->create();
 

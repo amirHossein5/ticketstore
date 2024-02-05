@@ -14,7 +14,7 @@ class ViewTicketListingTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function shows_published_tickets_ordered_by_created_at(): void
+    public function shows_published_tickets_in_order(): void
     {
         $expected = Ticket::factory(3)->published()->create()
             ->sortByDesc('created_at');
@@ -30,7 +30,7 @@ class ViewTicketListingTest extends TestCase
     }
 
     /** @test */
-    public function doesnt_show_unpublished_tickets()
+    public function does_not_show_unpublished_tickets()
     {
         Ticket::factory(3)->create();
 
