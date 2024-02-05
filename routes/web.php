@@ -24,7 +24,7 @@ Route::get('/purchase', function () {
 
 Route::get('/orders/{order_code}', function () {
     return view('orders.show');
-})->name('purchase');
+})->name('orders.show');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
