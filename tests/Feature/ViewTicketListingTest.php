@@ -14,15 +14,29 @@ class ViewTicketListingTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function shows_list_of_tickets_ordered_by_created_at_desc(): void
+    public function shows_published_tickets_ordered_by_created_at(): void
     {
-        $expected = Ticket::factory(3)->create();
+        $expected = Ticket::factory(3)->published()->create()
+            ->sortByDesc('created_at');
 
         $response = $this->get('/');
 
-        $response->assertViewHas('tickets', $expected->sortByDesc('created_at'));
+        $this->assertEquals(
+            $response['tickets']->pluck('id'),
+            $expected->pluck('id')
+        );
         $response->assertSeeInOrder($expected->pluck('ulid')->toArray());
         $response->assertSeeInOrder($expected->pluck('title')->toArray());
+    }
+
+    /** @test */
+    public function doesnt_show_unpublished_tickets()
+    {
+        Ticket::factory(3)->create();
+
+        $response = $this->get('/');
+
+        $this->assertEquals($response['tickets']->toArray(), []);
     }
 
     /** @test */
@@ -30,7 +44,7 @@ class ViewTicketListingTest extends TestCase
     {
         $this->get('/')->assertSee('No tickets found!');
 
-        Ticket::factory()->create();
+        Ticket::factory()->published()->create();
 
         $this->get('/')->assertDontSee('No tickets found!');
     }

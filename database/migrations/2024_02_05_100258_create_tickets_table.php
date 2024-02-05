@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('subtitle');
             $table->integer('price');
+            $table->timestamp('published_at')->nullable();
             $table->datetime('time_to_use');
             $table->text('image')->nullable();
             $table->timestamps();

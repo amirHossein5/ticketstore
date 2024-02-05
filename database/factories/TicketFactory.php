@@ -25,4 +25,11 @@ class TicketFactory extends Factory
             'created_at' => fake()->dateTimeBetween(),
         ];
     }
+
+    public function published(): static
+    {
+        return $this->state(fn () => [
+            'published_at' => now()->toDateTimeString(),
+        ]);
+    }
 }
