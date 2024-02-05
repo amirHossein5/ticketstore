@@ -5,7 +5,7 @@
         <div class="flex flex-col gap-y-8 mt-20 bg-[#2D2D35] px-10 py-8 rounded">
             <div>
                 <h1 class="uppercase font-bold text-base text-center text-gray-200">ticketstore</h1>
-                <p class="text-gray-200 text-base mt-2">3 tickets to T20 South Africa vs Australia</p>
+                <p class="text-gray-200 text-base mt-2">{{ $quantity }} tickets to {{ $ticket->title }}</p>
             </div>
 
             <form class="flex flex-col gap-2">

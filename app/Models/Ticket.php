@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,5 +37,10 @@ class Ticket extends Model
         return Attribute::make(
             get: fn() => $this->time_to_use->format('D M d h:iA')
         );
+    }
+
+    public function scopePublished(Builder $builder): void
+    {
+        $builder->whereNotNull('published_at');
     }
 }
