@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tickets', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->ulid();
-            $table->string('title');
-            $table->string('subtitle');
-            $table->integer('price');
+            $table->ulid('code');
+            $table->string('email');
             $table->integer('quantity');
-            $table->integer('sold_count')->default(0);
-            $table->timestamp('published_at')->nullable();
-            $table->datetime('time_to_use');
-            $table->text('image')->nullable();
+            $table->integer('charged');
+            $table->string('last_4');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tickets');
+        Schema::dropIfExists('orders');
     }
 };

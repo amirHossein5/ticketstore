@@ -17,9 +17,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [TicketController::class, 'index']);
 
-Route::get('/purchase/{ticket_ulid}', [OrderController::class, 'create'])->name('purchase');
+Route::get('/purchase/{ticket:ulid}', [OrderController::class, 'create'])->name('purchase');
 
-Route::get('/orders/{order_code}', function () {
+Route::post('/purchase/{ticket:ulid}', [OrderController::class, 'store']);
+
+Route::get('/orders/{order:code}', function () {
     return view('orders.show');
 })->name('orders.show');
 

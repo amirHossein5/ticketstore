@@ -25,6 +25,11 @@ class Ticket extends Model
         return ['ulid'];
     }
 
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->published()->firstOrFail();
+    }
+
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
