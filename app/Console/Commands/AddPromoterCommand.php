@@ -47,7 +47,6 @@ class AddPromoterCommand extends Command
             'register_link' => URL::temporarySignedRoute(
                 'register',
                 now()->addMinutes(30),
-                ['email' => $email]
             )
         ]);
 
