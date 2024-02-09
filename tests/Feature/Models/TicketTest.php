@@ -3,6 +3,7 @@
 namespace Tests\Feature\Models;
 
 use App\Models\Ticket;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
@@ -12,11 +13,22 @@ class TicketTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function cannot_create_duplicated_ulids()
+    {
+        $ticket1 = Ticket::factory()->create();
+        $ticket2 = Ticket::factory()->create();
+
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        $ticket1->update(['ulid' => $ticket2->ulid]);
+    }
+
+    /** @test */
     public function generates_ulid_alongside_of_id()
     {
         $ticket = Ticket::factory()->create();
 
-        $this->assertTrue(is_integer($ticket->id));
+        $this->assertTrue(is_int($ticket->id));
         $this->assertTrue(Ulid::isValid($ticket->ulid));
     }
 
@@ -40,5 +52,17 @@ class TicketTest extends TestCase
             number_format($ticket->price / 100, 2),
             $ticket->formatted_price,
         );
+    }
+
+    /** @test */
+    public function determine_ticket_sold_out()
+    {
+        $ticket = Ticket::factory()->create(['quantity' => 1]);
+
+        $this->assertFalse($ticket->sold_out);
+
+        $ticket->update(['quantity' => 0]);
+
+        $this->assertTrue($ticket->sold_out);
     }
 }

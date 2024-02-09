@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -23,6 +24,10 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
+        $this->renderable(function (InvalidSignatureException $e) {
+            abort(404);
+        });
+
         $this->reportable(function (Throwable $e) {
             //
         });

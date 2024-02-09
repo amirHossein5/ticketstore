@@ -4,7 +4,6 @@ namespace Tests\Feature\Orders;
 
 use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert;
 use Tests\TestCase;
@@ -19,7 +18,7 @@ class CreateOrderValidationTest extends TestCase
     {
         parent::setUp();
 
-        $this->ticket = Ticket::factory()->published()->create();
+        $this->ticket = $this->publishedTicket();
 
         TestResponse::macro('onlyHasErrors', function (string ...$keys) {
             Assert::assertEquals(
@@ -27,6 +26,8 @@ class CreateOrderValidationTest extends TestCase
                 session('errors')->getBag('default')->keys(),
                 'Failed asserting session has given errors'
             );
+
+            return $this;
         });
     }
 
@@ -35,7 +36,7 @@ class CreateOrderValidationTest extends TestCase
         return array_merge([
             'email' => fake()->email,
             'quantity' => $q = fake()->numberBetween(1, $this->ticket->fresh()->quantity),
-            'card_number' => fake()->numerify(1 . str_repeat('#', 15)),
+            'card_number' => fake()->numerify(1 .str_repeat('#', 15)),
             'exp_month' => fake()->month(),
             'exp_year' => substr(fake()->year(), -2),
             'cvc' => fake()->numberBetween(1000, 9999),
@@ -50,7 +51,7 @@ class CreateOrderValidationTest extends TestCase
     /** @test */
     public function email_is_required()
     {
-        $this->sendRequest([
+        $response = $this->sendRequest([
             'email' => '',
         ])->onlyHasErrors('email');
     }
@@ -107,7 +108,7 @@ class CreateOrderValidationTest extends TestCase
     public function quantity_cannot_be_more_than_ticket_quantity()
     {
         $this->sendRequest([
-            'quantity' => '' . $this->ticket->quantity + 1,
+            'quantity' => ''.$this->ticket->quantity + 1,
         ])->onlyHasErrors('quantity');
 
         $this->sendRequest([
@@ -151,7 +152,7 @@ class CreateOrderValidationTest extends TestCase
     public function exp_month_is_required()
     {
         $this->sendRequest([
-            'exp_month' => ''
+            'exp_month' => '',
         ])->onlyHasErrors('exp_month');
     }
 
@@ -159,7 +160,7 @@ class CreateOrderValidationTest extends TestCase
     public function exp_month_is_numeric()
     {
         $this->sendRequest([
-            'exp_month' => 's2'
+            'exp_month' => 's2',
         ])->onlyHasErrors('exp_month');
     }
 
@@ -167,11 +168,11 @@ class CreateOrderValidationTest extends TestCase
     public function exp_month_is_2_digits_long()
     {
         $this->sendRequest([
-            'exp_month' => '102'
+            'exp_month' => '102',
         ])->onlyHasErrors('exp_month');
 
         $this->sendRequest([
-            'exp_month' => '01'
+            'exp_month' => '01',
         ])->assertSessionHasNoErrors();
     }
 
@@ -179,7 +180,7 @@ class CreateOrderValidationTest extends TestCase
     public function exp_year_is_required()
     {
         $this->sendRequest([
-            'exp_year' => ''
+            'exp_year' => '',
         ])->onlyHasErrors('exp_year');
     }
 
@@ -187,7 +188,7 @@ class CreateOrderValidationTest extends TestCase
     public function exp_year_is_numeric()
     {
         $this->sendRequest([
-            'exp_year' => 's2'
+            'exp_year' => 's2',
         ])->onlyHasErrors('exp_year');
     }
 
@@ -195,11 +196,11 @@ class CreateOrderValidationTest extends TestCase
     public function exp_year_is_2_digits_long()
     {
         $this->sendRequest([
-            'exp_year' => '102'
+            'exp_year' => '102',
         ])->onlyHasErrors('exp_year');
 
         $this->sendRequest([
-            'exp_year' => '01'
+            'exp_year' => '01',
         ])->assertSessionHasNoErrors();
     }
 
@@ -207,7 +208,7 @@ class CreateOrderValidationTest extends TestCase
     public function cvc_is_required()
     {
         $this->sendRequest([
-            'cvc' => ''
+            'cvc' => '',
         ])->onlyHasErrors('cvc');
     }
 
@@ -215,7 +216,7 @@ class CreateOrderValidationTest extends TestCase
     public function cvc_is_numeric()
     {
         $this->sendRequest([
-            'cvc' => 'a422'
+            'cvc' => 'a422',
         ])->onlyHasErrors('cvc');
     }
 
@@ -223,19 +224,19 @@ class CreateOrderValidationTest extends TestCase
     public function cvc_is_3_to_4_digits_long()
     {
         $this->sendRequest([
-            'cvc' => '10'
+            'cvc' => '10',
         ])->onlyHasErrors('cvc');
 
         $this->sendRequest([
-            'cvc' => '10101'
+            'cvc' => '10101',
         ])->onlyHasErrors('cvc');
 
         $this->sendRequest([
-            'cvc' => '011'
+            'cvc' => '011',
         ])->assertSessionHasNoErrors();
 
         $this->sendRequest([
-            'cvc' => '1011'
+            'cvc' => '1011',
         ])->assertSessionHasNoErrors();
     }
 }

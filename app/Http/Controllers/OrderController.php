@@ -6,23 +6,25 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\View\View;
 
 class OrderController extends Controller
 {
+    public function show(Order $order): View
+    {
+        return view('orders.show', [
+            'order' => $order->load('tickets'),
+        ]);
+    }
+
     public function create(Ticket $ticket): View|RedirectResponse
     {
-        $quantity = request('quantity');
-
-        if (!is_numeric($quantity)) {
-            return redirect()->route('purchase', [
-                'ticket' => $ticket->ulid,
-                'quantity' => 1
-            ]);
+        if ($ticket->sold_out) {
+            abort(404);
         }
 
-        return view('orders.create', compact('ticket', 'quantity'));
+        return view('orders.create', compact('ticket'));
     }
 
     public function store(StoreOrderRequest $request, Ticket $ticket): RedirectResponse
@@ -41,6 +43,16 @@ class OrderController extends Controller
             'last_4' => substr($validated['card_number'], -4),
         ]);
 
-        return to_route('orders.show', ['order' => $order]);
+        for ($i = 1; $i <= $validated['quantity']; $i++) {
+            $order->addTicket($ticket);
+        }
+
+        $url = URL::temporarySignedRoute(
+            'orders.show',
+            now()->addMinutes(30),
+            ['order' => $order->code]
+        );
+
+        return redirect($url);
     }
 }

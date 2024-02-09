@@ -4,9 +4,7 @@ namespace Tests\Feature\Orders;
 
 use App\Models\Order;
 use App\Models\Ticket;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
 
@@ -19,31 +17,38 @@ class CreateOrderTest extends TestCase
         return array_merge([
             'email' => fake()->email,
             'quantity' => fake()->numberBetween(1, $maxQuantity),
-            'card_number' => fake()->numerify(1 . str_repeat('#', 15)),
+            'card_number' => fake()->numerify(1 .str_repeat('#', 15)),
             'exp_month' => fake()->month(),
             'exp_year' => substr(fake()->year(), -2),
             'cvc' => fake()->numberBetween(1000, 9999),
         ], $override);
     }
 
+    private function purchase(Ticket $ticket, array $data = []): array
+    {
+        $response = $this->post(
+            "/purchase/{$ticket->ulid}",
+            $form = $this->validData($data, $ticket->fresh()->quantity)
+        );
+
+        return [$form, $response];
+    }
+
     /** @test */
     public function creating_order_for_pubslished_ticket()
     {
-        $ticket = Ticket::factory()->published()->create();
+        $ticket = $this->publishedTicket();
+        $this->assertDatabaseCount('orders', 0);
 
-        $this->assertFalse(Order::exists());
+        [$data, $response] = $this->purchase($ticket);
 
-        $response = $this->post(
-            "/purchase/{$ticket->ulid}",
-            $data = $this->validData(maxQuantity: $ticket->quantity)
-        );
-
-        $this->assertTrue(Order::exists());
-
-        $this->assertEquals($ticket->fresh()->quantity, $ticket->quantity - $data['quantity']);
-        $this->assertEquals($ticket->fresh()->sold_count, $data['quantity']);
+        $this->assertDatabaseCount('orders', 1);
 
         $order = Order::first();
+        $this->assertStringStartsWith(
+            url("/orders/{$order->code}"),
+            $response->headers->get('Location')
+        );
 
         $this->assertEquals([
             'id' => 1,
@@ -54,34 +59,81 @@ class CreateOrderTest extends TestCase
         ], collect($order)->except('code', 'created_at', 'updated_at')->toArray());
 
         $this->assertTrue(Ulid::isValid($order->code));
-
-        $response->assertRedirect("/orders/{$order->code}");
     }
 
     /** @test */
     public function by_ordering_multiple_tickets_quantity_is_calculated_correctly()
     {
-        $ticket = Ticket::factory()->published()->create();
+        $ticket = $this->publishedTicket(['quantity' => 10]);
 
-        $oldTicket = $ticket;
-        $response = $this->post(
-            "/purchase/{$ticket->ulid}",
-            $data = $this->validData(maxQuantity: $ticket->quantity)
+        $this->purchase($ticket, ['quantity' => 4]);
+
+        $this->assertEquals(4, $ticket->fresh()->sold_count);
+        $this->assertEquals(6, $ticket->fresh()->quantity);
+
+        $this->purchase($ticket, ['quantity' => 6]);
+
+        $this->assertEquals(10, $ticket->fresh()->sold_count);
+        $this->assertEquals(0, $ticket->fresh()->quantity);
+    }
+
+    /**
+     * @group slow
+     *
+     * @test
+     */
+    public function creates_unique_ticket_codes()
+    {
+        $ticket = $this->publishedTicket(['quantity' => $tries = 20000]);
+
+        $this->purchase($ticket, ['quantity' => $tries]);
+
+        $this->assertEquals(
+            $tries,
+            Order::first()->tickets()->pluck('code')->unique()->count()
         );
+    }
 
-        $ticket = $ticket->fresh();
-        $this->assertEquals($ticket->quantity, $oldTicket->quantity - $data['quantity']);
-        $this->assertEquals($ticket->sold_count, $data['quantity']);
+    /** @test */
+    public function getting_repeated_random_code()
+    {
+        $GLOBALS['codes'] = [
+            'code1',
+            'code1', 'code1', 'code2',
+        ];
 
-        $oldTicket = $ticket;
-        $response = $this->post(
-            "/purchase/{$ticket->ulid}",
-            $data = $this->validData(maxQuantity: $ticket->quantity)
+        app()->bind('short_code', function () {
+            return array_shift($GLOBALS['codes']);
+        });
+
+        $ticket = $this->publishedTicket(['quantity' => 10]);
+
+        $this->purchase($ticket);
+
+        $this->assertDatabaseCount('orders', 1);
+        $this->assertDatabaseCount('order_ticket', 2);
+        $this->assertEquals(
+            ['code1', 'code2'],
+            Order::first()->tickets()->pluck('code')->toArray()
         );
+    }
 
-        $ticket = $ticket->fresh();
-        $this->assertEquals($ticket->quantity, $oldTicket->quantity - $data['quantity']);
-        $this->assertEquals($ticket->sold_count, $oldTicket->sold_count + $data['quantity']);
+    /** @test */
+    public function order_show_page_will_expire()
+    {
+        $ticket = $this->publishedTicket();
+
+        $this->freezeTime(function () use ($ticket) {
+            [, $response] = $this->purchase($ticket);
+
+            $url = $response->headers->get('Location');
+
+            $this->get($url)
+                ->assertOk()
+                ->assertSee('This page expires in '.now()->addMinutes(30)->format('H:i'));
+            $this->travel(31)->minutes();
+            $this->get($url)->assertStatus(404);
+        });
     }
 
     /** @test */

@@ -22,7 +22,7 @@ class TicketFactory extends Factory
             'time_to_use' => fake()->dateTimeBetween('+1 day', '+1 month'),
             'price' => fake()->numberBetween(100, 999),
             'quantity' => fake()->numberBetween(1, 1000),
-            'image' => null,
+            'image' => fake()->imageUrl,
             'created_at' => fake()->dateTimeBetween(),
         ];
     }

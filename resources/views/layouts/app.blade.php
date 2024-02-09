@@ -7,7 +7,7 @@
         <title>{{ $title }}</title>
     @endif
 
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class='bg-[#26262D]'>
     {{ $slot }}

@@ -19,11 +19,9 @@ Route::get('/', [TicketController::class, 'index']);
 
 Route::get('/purchase/{ticket:ulid}', [OrderController::class, 'create'])->name('purchase');
 
-Route::post('/purchase/{ticket:ulid}', [OrderController::class, 'store']);
+Route::post('/purchase/{ticket:ulid}', [OrderController::class, 'store'])->name('order.store');
 
-Route::get('/orders/{order:code}', function () {
-    return view('orders.show');
-})->name('orders.show');
+Route::get('/orders/{order:code}', [OrderController::class, 'show'])->name('orders.show')->middleware('signed');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');

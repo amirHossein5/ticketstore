@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 class Ticket extends Model
 {
@@ -27,7 +26,7 @@ class Ticket extends Model
 
     public function resolveRouteBinding($value, $field = null)
     {
-        return $this->published()->firstOrFail();
+        return $this->published()->where($field, $value)->firstOrFail();
     }
 
     protected function formattedPrice(): Attribute
@@ -40,7 +39,14 @@ class Ticket extends Model
     protected function formattedTimeToUse(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->time_to_use->format('D M d h:iA')
+            get: fn () => $this->time_to_use->format('D M d h:iA')
+        );
+    }
+
+    protected function soldOut(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->quantity === 0
         );
     }
 
