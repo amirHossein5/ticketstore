@@ -108,7 +108,7 @@ class CreateOrderTest extends TestCase
 
         $ticket = $this->publishedTicket(['quantity' => 10]);
 
-        $this->purchase($ticket);
+        $this->purchase($ticket, ['quantity' => 2]);
 
         $this->assertDatabaseCount('orders', 1);
         $this->assertDatabaseCount('order_ticket', 2);
