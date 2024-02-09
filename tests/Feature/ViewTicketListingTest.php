@@ -4,9 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Carbon;
-use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
 
 class ViewTicketListingTest extends TestCase

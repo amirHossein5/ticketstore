@@ -36,11 +36,11 @@ class StoreOrderRequest extends FormRequest
                         'quantity',
                         __('validation.max.numeric', [
                             'attribute' => 'quantity',
-                            'max' => $this->ticket->quantity
+                            'max' => $this->ticket->quantity,
                         ])
                     );
                 }
-            }
+            },
         ];
     }
 }
