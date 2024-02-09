@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-slot:title>register</x-slot>
 
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register', ['expires' => request()->expires, 'signature' => request()->signature]) }}">
         @csrf
 
         <!-- Name -->

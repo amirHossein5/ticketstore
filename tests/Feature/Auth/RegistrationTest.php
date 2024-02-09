@@ -41,6 +41,13 @@ class RegistrationTest extends TestCase
         $this->getRegister()->assertStatus(200);
     }
 
+    /** @test */
+    public function register_page_contains_proper_form_action()
+    {
+        $this->get($url = URL::temporarySignedRoute('register', now()->addMinute()))
+            ->assertSee('action="'.e($url).'"', false);
+    }
+
     public function test_new_users_can_register(): void
     {
         $response = $this->postRegister([
