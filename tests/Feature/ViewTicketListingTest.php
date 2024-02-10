@@ -29,11 +29,17 @@ class ViewTicketListingTest extends TestCase
     /** @test */
     public function does_not_show_unpublished_tickets()
     {
-        Ticket::factory(3)->create();
-
+        Ticket::factory()->create();
         $response = $this->get('/');
+        $this->assertEquals([], $response['tickets']->toArray());
 
-        $this->assertEquals($response['tickets']->toArray(), []);
+        Ticket::factory()->create(['published_at' => now()->addMinute()]);
+        $response = $this->get('/');
+        $this->assertEquals([], $response['tickets']->toArray());
+
+        $ticket = Ticket::factory()->create(['published_at' => now()]);
+        $response = $this->get('/');
+        $this->assertEquals([$ticket->fresh()->toArray()], $response['tickets']->toArray());
     }
 
     /** @test */

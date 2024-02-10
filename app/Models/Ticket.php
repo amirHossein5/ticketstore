@@ -52,6 +52,6 @@ class Ticket extends Model
 
     public function scopePublished(Builder $builder): void
     {
-        $builder->whereNotNull('published_at');
+        $builder->whereNotNull('published_at')->where('published_at', '<=', now());
     }
 }
