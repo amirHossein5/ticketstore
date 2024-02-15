@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class OrderCreatedMail extends Mailable
 {
@@ -16,7 +17,7 @@ class OrderCreatedMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $url, public string $expiresAt)
+    public function __construct(public string $url, public Carbon $expiresAt)
     {
         //
     }

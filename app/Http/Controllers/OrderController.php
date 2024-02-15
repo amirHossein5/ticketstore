@@ -51,12 +51,12 @@ class OrderController extends Controller
 
         $url = URL::temporarySignedRoute(
             'orders.show',
-            now()->addMinutes(30),
+            $expiresAt = now()->addMinutes(30),
             ['order' => $order->code]
         );
 
         Mail::to($validated['email'])->queue(
-            new OrderCreatedMail($url, now()->addMinutes(30)->format('H:i'))
+            new OrderCreatedMail($url, $expiresAt)
         );
 
         return redirect($url);
