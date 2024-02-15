@@ -44,12 +44,14 @@ class AddPromoterCommand extends Command
 
         $invitation = Invitation::create([
             'email' => $email,
-            'register_link' => URL::temporarySignedRoute(
+            'register_link' => $url = URL::temporarySignedRoute(
                 'register',
-                now()->addMinutes(30),
+                $expiresAt = now()->addMinutes(30),
             )
         ]);
 
-        Mail::to($email)->queue(new InvitePromoterMail($invitation));
+        Mail::to($email)->queue(
+            new InvitePromoterMail($url, $expiresAt)
+        );
     }
 }
