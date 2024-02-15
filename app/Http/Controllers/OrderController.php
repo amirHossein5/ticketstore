@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Mail\OrderCreatedMail;
 use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\View\View;
 
@@ -51,6 +53,10 @@ class OrderController extends Controller
             'orders.show',
             now()->addMinutes(30),
             ['order' => $order->code]
+        );
+
+        Mail::to($validated['email'])->queue(
+            new OrderCreatedMail($url, now()->addMinutes(30)->format('H:i'))
         );
 
         return redirect($url);
