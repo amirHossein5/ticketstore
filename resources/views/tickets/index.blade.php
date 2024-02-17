@@ -11,11 +11,11 @@
                 @endif
 
                 @if($ticket->image)
-                    <div class="aspect-[4/3]">
+                    <div class="aspect-[5/3]">
                         <img
                             src="{{ asset($ticket->image)}}"
                             alt="ticket image"
-                            class="max-w-[400px] max-h-[300px] rounded-l-md"
+                            class="max-w-[400px] max-h-[240px] rounded-l-md"
                         >
                     </div>
                 @endif

@@ -22,6 +22,10 @@ class OrderController extends Controller
 
     public function create(Ticket $ticket): View|RedirectResponse
     {
+        if (!$ticket->isPublished()) {
+            abort(404);
+        }
+
         if ($ticket->sold_out) {
             abort(404);
         }
@@ -45,9 +49,7 @@ class OrderController extends Controller
             'last_4' => substr($validated['card_number'], -4),
         ]);
 
-        for ($i = 1; $i <= $validated['quantity']; $i++) {
-            $order->addTicket($ticket);
-        }
+        $order->addTicket($ticket, $validated['quantity']);
 
         $url = URL::temporarySignedRoute(
             'orders.show',

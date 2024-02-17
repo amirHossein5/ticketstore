@@ -16,15 +16,19 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function addTicket(Ticket $ticket): void
+    public function addTicket(Ticket $ticket, int $count = 1): self
     {
-        try {
-            $this->tickets()->attach($ticket, [
-                'code' => short_code(),
-            ]);
-        } catch (UniqueConstraintViolationException $e) {
-            $this->addTicket($ticket);
+        for ($i = 1; $i <= $count; $i++) {
+            try {
+                $this->tickets()->attach($ticket, [
+                    'code' => short_code(),
+                ]);
+            } catch (UniqueConstraintViolationException $e) {
+                $this->addTicket($ticket);
+            }
         }
+
+        return $this;
     }
 
     public function uniqueIds()
@@ -37,7 +41,7 @@ class Order extends Model
         return $this->belongsToMany(Ticket::class)->withPivot('code');
     }
 
-    protected function formattedCharged(): Attribute
+    protected function chargedInDollars(): Attribute
     {
         return Attribute::make(
             get: fn () => number_format($this->charged / 100, 2)

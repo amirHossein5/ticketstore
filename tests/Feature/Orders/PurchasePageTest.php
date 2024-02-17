@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
-class ViewPurchasePageTest extends TestCase
+class PurchasePageTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -28,7 +28,7 @@ class ViewPurchasePageTest extends TestCase
     }
 
     /** @test */
-    public function purchasing_zero_quantity_ticket()
+    public function purchasing_sold_out_ticket()
     {
         $this->visitPurchaseFor($this->publishedTicket(['quantity' => 0]))
             ->assertStatus(404);

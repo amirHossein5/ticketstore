@@ -21,4 +21,12 @@ class OrderTest extends TestCase
 
         $order1->update(['code' => $order2->code]);
     }
+
+    /** @test */
+    public function formats_charged_to_dollars()
+    {
+        $order = Order::factory()->create(['charged' => 1331]);
+
+        $this->assertEquals(13.31, $order->charged_in_dollars);
+    }
 }

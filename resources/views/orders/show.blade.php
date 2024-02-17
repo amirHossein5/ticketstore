@@ -13,7 +13,7 @@
 
         <div class="flex flex-row gap-2 text-xl text-gray-200 mt-4">
             <p>Order Total:</p>
-            <p>${{ $order->formatted_charged }}</p>
+            <p>${{ $order->charged_in_dollars }}</p>
         </div>
         <div class="flex flex-row gap-2 text-xl text-gray-200 mt-2">
             <p>Card Number:</p>

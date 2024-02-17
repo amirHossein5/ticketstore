@@ -8,7 +8,7 @@ use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert;
 use Tests\TestCase;
 
-class CreateOrderValidationTest extends TestCase
+class StoreOrderValidationTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,16 +19,6 @@ class CreateOrderValidationTest extends TestCase
         parent::setUp();
 
         $this->ticket = $this->publishedTicket();
-
-        TestResponse::macro('onlyHasErrors', function (string ...$keys) {
-            Assert::assertEquals(
-                $keys,
-                session('errors')->getBag('default')->keys(),
-                'Failed asserting session has given errors'
-            );
-
-            return $this;
-        });
     }
 
     private function validData(array $override = []): array
@@ -51,7 +41,7 @@ class CreateOrderValidationTest extends TestCase
     /** @test */
     public function email_is_required()
     {
-        $response = $this->sendRequest([
+        $this->sendRequest([
             'email' => '',
         ])->onlyHasErrors('email');
     }

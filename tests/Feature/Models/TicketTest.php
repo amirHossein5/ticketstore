@@ -65,4 +65,41 @@ class TicketTest extends TestCase
 
         $this->assertTrue($ticket->sold_out);
     }
+
+    /** @test */
+    public function published_scope_test()
+    {
+        Ticket::factory()->create();
+        $this->assertEquals(0, Ticket::published()->count());
+
+        Ticket::factory()->create(['published_at' => now()->addSeconds(5)]);
+        $this->assertEquals(0, Ticket::published()->count());
+
+        $ticket = Ticket::factory()->create(['published_at' => now()]);
+        $this->assertEquals([$ticket->fresh()->toArray()], Ticket::published()->get()->toArray());
+    }
+
+    /** @test */
+    public function determining_ticket_is_published()
+    {
+        $ticket = Ticket::factory()->create();
+        $this->assertTrue($ticket->isPublished() === false);
+
+        $ticket = Ticket::factory()->create(['published_at' => now()->addSeconds(5)]);
+        $this->assertTrue($ticket->isPublished() === false);
+
+        $ticket = Ticket::factory()->create(['published_at' => now()]);
+        $this->assertTrue($ticket->isPublished() === true);
+    }
+
+    /** @test */
+    public function calculates_total_tickets_count()
+    {
+        $ticket = Ticket::factory()->create([
+            'sold_count' => 10,
+            'quantity' => 2
+        ]);
+
+        $this->assertEquals(12, $ticket->totalTicketsCount());
+    }
 }

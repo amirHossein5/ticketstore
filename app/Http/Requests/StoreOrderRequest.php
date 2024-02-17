@@ -15,6 +15,13 @@ class StoreOrderRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        if (!$this->ticket->isPublished()) {
+            abort(404);
+        }
+    }
+
     public function rules(): array
     {
         return [

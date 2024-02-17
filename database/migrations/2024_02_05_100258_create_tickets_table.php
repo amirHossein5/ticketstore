@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('price');
             $table->integer('quantity');
             $table->integer('sold_count')->default(0);
+            $table->foreignId('user_id')->nullable()
+                ->constrained()->nullOnDelete()->cascadeOnUpdate();
             $table->timestamp('published_at')->nullable();
             $table->datetime('time_to_use');
             $table->text('image')->nullable();

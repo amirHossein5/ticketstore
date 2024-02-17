@@ -2,13 +2,15 @@
 
 namespace Tests\Feature\Orders;
 
+use App\Mail\OrderCreatedMail;
 use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
 
-class CreateOrderTest extends TestCase
+class StoreOrderTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -17,7 +19,7 @@ class CreateOrderTest extends TestCase
         return array_merge([
             'email' => fake()->email,
             'quantity' => fake()->numberBetween(1, $maxQuantity),
-            'card_number' => fake()->numerify(1 .str_repeat('#', 15)),
+            'card_number' => fake()->numerify(1 . str_repeat('#', 15)),
             'exp_month' => fake()->month(),
             'exp_year' => substr(fake()->year(), -2),
             'cvc' => fake()->numberBetween(1000, 9999),
@@ -37,6 +39,8 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function creating_order_for_pubslished_ticket()
     {
+        Mail::fake();
+
         $ticket = $this->publishedTicket();
         $this->assertDatabaseCount('orders', 0);
 
@@ -59,6 +63,20 @@ class CreateOrderTest extends TestCase
         ], collect($order)->except('code', 'created_at', 'updated_at')->toArray());
 
         $this->assertTrue(Ulid::isValid($order->code));
+
+        Mail::assertQueuedCount(1);
+        Mail::assertQueued(OrderCreatedMail::class, function ($mail) use ($order, $response, $data) {
+            $mail->assertSeeInOrderInHtml([
+                "Your order link:",
+                $response->headers->get('Location'),
+                "Link will expire at {$order->created_at->addMinutes(30)->format('H:i')}"
+            ]);
+            $mail->assertTo($data['email']);
+            $mail->assertFrom(config('mail.from.address'));
+            $mail->assertHasSubject('Your Order Link');
+
+            return true;
+        });
     }
 
     /** @test */
@@ -130,7 +148,7 @@ class CreateOrderTest extends TestCase
 
             $this->get($url)
                 ->assertOk()
-                ->assertSee('This page expires in '.now()->addMinutes(30)->format('H:i'));
+                ->assertSee('This page expires in ' . now()->addMinutes(30)->format('H:i'));
             $this->travel(31)->minutes();
             $this->get($url)->assertStatus(404);
         });
