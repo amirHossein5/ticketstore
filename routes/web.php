@@ -1,10 +1,9 @@
 <?php
 
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dashboard;
-use Intervention\Image\Facades\Image;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,4 +43,4 @@ Route::prefix('/dashboard')->name('dashboard.')->middleware(['auth', 'verified']
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

@@ -32,13 +32,15 @@ class AddPromoterCommand extends Command
     {
         $email = $this->argument('email');
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->error('email is invalid');
+
             return 1;
         }
 
         if (User::where('email', $email)->exists()) {
             $this->error('email already exists');
+
             return 1;
         }
 
@@ -47,7 +49,7 @@ class AddPromoterCommand extends Command
             'register_link' => $url = URL::temporarySignedRoute(
                 'register',
                 $expiresAt = now()->addMinutes(30),
-            )
+            ),
         ]);
 
         Mail::to($email)->queue(

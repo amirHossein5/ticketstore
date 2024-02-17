@@ -6,7 +6,6 @@ use App\Jobs\ProcessTicketImage;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Testing\File;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
@@ -105,7 +104,7 @@ class UpdateTicketTest extends TestCase
 
         tap($ticket->fresh(), function ($ticket) {
             $this->assertTrue(
-                Storage::disk('public')->exists('ticket-posters/' . basename($ticket->image))
+                Storage::disk('public')->exists('ticket-posters/'.basename($ticket->image))
             );
 
             $this->assertFileEquals(
@@ -122,20 +121,20 @@ class UpdateTicketTest extends TestCase
 
         $user = User::factory()->create();
         $ticket = Ticket::factory()->for($user)->create([
-            'image' => Storage::disk('public')->put('ticket-posters/', $this->image())
+            'image' => Storage::disk('public')->put('ticket-posters/', $this->image()),
         ]);
 
-        $this->assertTrue(Storage::disk('public')->exists('ticket-posters/' . basename($ticket->image)));
+        $this->assertTrue(Storage::disk('public')->exists('ticket-posters/'.basename($ticket->image)));
 
         $this->actingAs($user)->put("/dashboard/tickets/edit/{$ticket->ulid}", $data = $this->validData([
             'image' => $this->unoptimizedImage(),
         ]));
 
-        $this->assertFalse(Storage::disk('public')->exists('ticket-posters/' . basename($ticket->image)));
+        $this->assertFalse(Storage::disk('public')->exists('ticket-posters/'.basename($ticket->image)));
 
         tap($ticket->fresh(), function ($ticket) {
             $this->assertTrue(
-                Storage::disk('public')->exists('ticket-posters/' . basename($ticket->image))
+                Storage::disk('public')->exists('ticket-posters/'.basename($ticket->image))
             );
 
             $this->assertFileEquals(
@@ -156,10 +155,10 @@ class UpdateTicketTest extends TestCase
         ]);
 
         $this->actingAs($user)->put("/dashboard/tickets/edit/{$ticket->ulid}", $data = $this->validData([
-            'image' => null
+            'image' => null,
         ]));
 
-        $this->assertFalse(Storage::disk('public')->exists('ticket-posters/' . basename($ticket->image)));
+        $this->assertFalse(Storage::disk('public')->exists('ticket-posters/'.basename($ticket->image)));
         $this->assertNull($ticket->fresh()->image);
     }
 
@@ -178,13 +177,14 @@ class UpdateTicketTest extends TestCase
 
         Queue::assertPushed(ProcessTicketImage::class, function ($job) {
             $job->handle();
+
             return true;
         });
 
         $ticket = $ticket->fresh();
 
         $this->assertTrue(
-            Storage::disk('public')->exists('ticket-posters/' . basename($ticket->image))
+            Storage::disk('public')->exists('ticket-posters/'.basename($ticket->image))
         );
 
         $this->assertFileEquals(
@@ -224,7 +224,7 @@ class UpdateTicketTest extends TestCase
     {
         $user = User::factory()->create();
         $ticket = Ticket::factory()->create([
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
         ]);
 
         $this->actingAs($user)->put("/dashboard/tickets/edit/{$ticket->ulid}", $this->validData())

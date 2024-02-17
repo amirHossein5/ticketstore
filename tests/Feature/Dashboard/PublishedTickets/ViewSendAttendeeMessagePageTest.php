@@ -5,7 +5,6 @@ namespace Tests\Feature\Dashboard\PublishedTickets;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ViewSendAttendeeMessagePageTest extends TestCase
@@ -31,7 +30,7 @@ class ViewSendAttendeeMessagePageTest extends TestCase
     {
         $user = User::factory()->create();
         $ticket = Ticket::factory()->published()->create([
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
         ]);
 
         $this->actingAs($user)

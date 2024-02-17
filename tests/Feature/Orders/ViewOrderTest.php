@@ -5,7 +5,6 @@ namespace Tests\Feature\Orders;
 use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -38,7 +37,7 @@ class ViewOrderTest extends TestCase
         $this->assertEquals($response['order']->toArray(), $order->load('tickets')->toArray());
         $response->assertSee($order->code);
         $response->assertSee("*** **** **** {$order->last_4}");
-        $response->assertSee('$' . number_format($order->charged / 100, 2));
+        $response->assertSee('$'.number_format($order->charged / 100, 2));
         $response->assertSeeInOrder([
             $ticket1->title,
             $ticket1->formatted_time_to_use,

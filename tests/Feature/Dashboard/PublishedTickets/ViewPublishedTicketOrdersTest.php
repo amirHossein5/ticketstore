@@ -6,7 +6,6 @@ use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
@@ -48,7 +47,7 @@ class ViewPublishedTicketOrdersTest extends TestCase
         $user = User::factory()->create();
         $ticket = Ticket::factory()->for($user)->published()->create([
             'sold_count' => 2,
-            'quantity' => 5
+            'quantity' => 5,
         ]);
 
         $response = $this->actingAs($user)->get("/dashboard/published-tickets/{$ticket->ulid}/orders");
@@ -131,7 +130,7 @@ class ViewPublishedTicketOrdersTest extends TestCase
     {
         $user = User::factory()->create();
         $ticket = Ticket::factory()->published()->create([
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
         ]);
 
         $this->actingAs($user)->get("/dashboard/published-tickets/{$ticket->ulid}/orders")

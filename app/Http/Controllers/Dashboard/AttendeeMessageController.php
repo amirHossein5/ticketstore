@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Mail\AttendeeMessageMail;
-use App\Models\AttendeeMessage;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +18,7 @@ class AttendeeMessageController extends Controller
             abort(404);
         }
 
-        if (!$ticket->isPublished()) {
+        if (! $ticket->isPublished()) {
             abort(404);
         }
 
@@ -32,13 +31,13 @@ class AttendeeMessageController extends Controller
             abort(404);
         }
 
-        if (!$ticket->isPublished()) {
+        if (! $ticket->isPublished()) {
             abort(404);
         }
 
         $validated = $request->validate([
             'title' => ['required'],
-            'body' => ['required']
+            'body' => ['required'],
         ]);
 
         $message = $ticket->attendeeMessages()->create($validated);

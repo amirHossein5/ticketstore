@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\Dashboard\Tickets;
 
-use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Testing\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;

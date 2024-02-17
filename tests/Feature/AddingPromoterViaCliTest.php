@@ -6,7 +6,6 @@ use App\Mail\InvitePromoterMail;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -30,9 +29,9 @@ class AddingPromoterViaCliTest extends TestCase
         Mail::assertQueuedCount(1);
         Mail::assertQueued(InvitePromoterMail::class, function (InvitePromoterMail $mail) use ($email, $invitation) {
             $mail->assertSeeInOrderInHtml([
-                "Ticketstore registration link:",
+                'Ticketstore registration link:',
                 "{$invitation->register_link}",
-                "Link will expire at {$invitation->created_at->addMinutes(30)->format('H:i')}"
+                "Link will expire at {$invitation->created_at->addMinutes(30)->format('H:i')}",
             ]);
             $mail->assertTo($email);
             $mail->assertFrom(config('mail.from.address'));

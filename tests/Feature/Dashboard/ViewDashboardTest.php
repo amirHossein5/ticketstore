@@ -5,14 +5,13 @@ namespace Tests\Feature\Dashboard;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ViewDashboardTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function ticket(?User $for = null, bool $published = false, string $created_at = null): Ticket
+    private function ticket(?User $for = null, bool $published = false, ?string $created_at = null): Ticket
     {
         return Ticket::factory()->create([
             'user_id' => $for?->id,

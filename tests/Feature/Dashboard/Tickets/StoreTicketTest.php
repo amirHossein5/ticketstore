@@ -6,7 +6,6 @@ use App\Jobs\ProcessTicketImage;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Testing\File;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
@@ -56,7 +55,7 @@ class StoreTicketTest extends TestCase
             'time_to_use' => '2024-12-08 11:28AM',
         ]);
 
-        tap(Ticket::first(), function ($ticket) use ($data, $user, $response) {
+        tap(Ticket::first(), function ($ticket) use ($user, $response) {
             $this->assertDatabaseCount('tickets', 1);
 
             $this->assertEquals('Football A vs B', $ticket->title);
@@ -85,13 +84,14 @@ class StoreTicketTest extends TestCase
 
         Queue::assertPushed(ProcessTicketImage::class, function ($job) {
             $job->handle();
+
             return true;
         });
 
         $ticket = Ticket::first();
 
         $this->assertTrue(
-            Storage::disk('public')->exists('ticket-posters/' . basename($ticket->image))
+            Storage::disk('public')->exists('ticket-posters/'.basename($ticket->image))
         );
 
         $this->assertFileEquals(

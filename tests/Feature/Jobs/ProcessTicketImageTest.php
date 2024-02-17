@@ -3,8 +3,6 @@
 namespace Tests\Feature\Jobs;
 
 use App\Jobs\ProcessTicketImage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 

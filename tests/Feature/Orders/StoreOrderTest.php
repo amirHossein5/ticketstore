@@ -19,7 +19,7 @@ class StoreOrderTest extends TestCase
         return array_merge([
             'email' => fake()->email,
             'quantity' => fake()->numberBetween(1, $maxQuantity),
-            'card_number' => fake()->numerify(1 . str_repeat('#', 15)),
+            'card_number' => fake()->numerify(1 .str_repeat('#', 15)),
             'exp_month' => fake()->month(),
             'exp_year' => substr(fake()->year(), -2),
             'cvc' => fake()->numberBetween(1000, 9999),
@@ -67,9 +67,9 @@ class StoreOrderTest extends TestCase
         Mail::assertQueuedCount(1);
         Mail::assertQueued(OrderCreatedMail::class, function ($mail) use ($order, $response, $data) {
             $mail->assertSeeInOrderInHtml([
-                "Your order link:",
+                'Your order link:',
                 $response->headers->get('Location'),
-                "Link will expire at {$order->created_at->addMinutes(30)->format('H:i')}"
+                "Link will expire at {$order->created_at->addMinutes(30)->format('H:i')}",
             ]);
             $mail->assertTo($data['email']);
             $mail->assertFrom(config('mail.from.address'));
@@ -148,7 +148,7 @@ class StoreOrderTest extends TestCase
 
             $this->get($url)
                 ->assertOk()
-                ->assertSee('This page expires in ' . now()->addMinutes(30)->format('H:i'));
+                ->assertSee('This page expires in '.now()->addMinutes(30)->format('H:i'));
             $this->travel(31)->minutes();
             $this->get($url)->assertStatus(404);
         });

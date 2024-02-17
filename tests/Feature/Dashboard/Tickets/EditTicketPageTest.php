@@ -5,7 +5,6 @@ namespace Tests\Feature\Dashboard\Tickets;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class EditTicketPageTest extends TestCase
@@ -55,7 +54,7 @@ class EditTicketPageTest extends TestCase
     {
         $user = User::factory()->create();
         $ticket = Ticket::factory()->create([
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
         ]);
 
         $this->actingAs($user)->get("/dashboard/tickets/edit/{$ticket->ulid}")

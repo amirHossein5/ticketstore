@@ -17,7 +17,7 @@ class StoreOrderRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        if (!$this->ticket->isPublished()) {
+        if (! $this->ticket->isPublished()) {
             abort(404);
         }
     }

@@ -8,11 +8,8 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Jobs\ProcessTicketImage;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Intervention\Image\Facades\Image;
 
 class TicketController extends Controller
 {
@@ -70,7 +67,6 @@ class TicketController extends Controller
         if (isset($request['image'])) {
             ProcessTicketImage::dispatch($ticket->fresh()->image);
         }
-
 
         return redirect('/dashboard');
     }

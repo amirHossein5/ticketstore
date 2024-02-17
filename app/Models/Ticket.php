@@ -54,7 +54,7 @@ class Ticket extends Model
 
     public function chunkAttendeeEmails(int $chunkCount, callable $callable): void
     {
-        $this->orders()->chunk($chunkCount, function ($orders) use ($callable){
+        $this->orders()->chunk($chunkCount, function ($orders) use ($callable) {
             $orders->pluck('email')->each(fn ($email) => $callable($email));
         });
     }

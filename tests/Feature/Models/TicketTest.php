@@ -97,7 +97,7 @@ class TicketTest extends TestCase
     {
         $ticket = Ticket::factory()->create([
             'sold_count' => 10,
-            'quantity' => 2
+            'quantity' => 2,
         ]);
 
         $this->assertEquals(12, $ticket->totalTicketsCount());

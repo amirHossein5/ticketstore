@@ -22,7 +22,7 @@ class OrderController extends Controller
 
     public function create(Ticket $ticket): View|RedirectResponse
     {
-        if (!$ticket->isPublished()) {
+        if (! $ticket->isPublished()) {
             abort(404);
         }
 

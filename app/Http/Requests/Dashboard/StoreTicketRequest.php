@@ -28,7 +28,7 @@ class StoreTicketRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:1'],
             'quantity' => ['required', 'integer', 'min:1'],
             'time_to_use' => ['required', 'date'],
-            'image' => ['nullable', 'image', 'max:1024', Rule::dimensions()->minWidth(400)->ratio(5/3)],
+            'image' => ['nullable', 'image', 'max:1024', Rule::dimensions()->minWidth(400)->ratio(5 / 3)],
         ];
     }
 

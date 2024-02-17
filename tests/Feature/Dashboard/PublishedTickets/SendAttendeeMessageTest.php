@@ -7,7 +7,6 @@ use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -88,7 +87,7 @@ class SendAttendeeMessageTest extends TestCase
 
         $user = User::factory()->create();
         $ticket = Ticket::factory()->published()->create([
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
         ]);
 
         Order::factory()->create(['email' => 'a@email.com'])->addTicket($ticket, 10);

@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $user = User::factory()->create([
             'name' => 'promoter',
             'email' => 'promoter@gmail.com',
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $images = [];

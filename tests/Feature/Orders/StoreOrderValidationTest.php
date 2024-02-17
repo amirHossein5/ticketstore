@@ -5,7 +5,6 @@ namespace Tests\Feature\Orders;
 use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
-use PHPUnit\Framework\Assert;
 use Tests\TestCase;
 
 class StoreOrderValidationTest extends TestCase
