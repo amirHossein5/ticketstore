@@ -9,6 +9,10 @@ jobs:
   linux:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php: ['8.3']
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -16,7 +20,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite, gd, pdo_mysql, fileinfo, ftp, memcached
           tools: composer:v2
           coverage: none
