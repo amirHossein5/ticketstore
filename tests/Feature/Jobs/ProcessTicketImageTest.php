@@ -35,7 +35,7 @@ class ProcessTicketImageTest extends TestCase
         $this->assertNotEquals(400, $width);
         $this->assertNotEquals(240, $height);
 
-        ProcessTicketImage::dispatch($path);
+        ProcessTicketImage::dispatch('image.png');
 
         [$width, $height] = getimagesize($path);
         $this->assertEquals(400, $width);
@@ -59,7 +59,7 @@ class ProcessTicketImageTest extends TestCase
         $this->assertEquals(400, $width);
         $this->assertEquals(240, $height);
 
-        ProcessTicketImage::dispatch($path);
+        ProcessTicketImage::dispatch('image.png');
 
         clearstatcache();
         $this->assertLessThan(
