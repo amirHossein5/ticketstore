@@ -1,7 +1,7 @@
 Landing page:
 ![Screenshot 2024-02-17 at 18-54-58 ticketstore](https://github.com/amirHossein5/ticketstore/assets/68776630/7c8deab3-5e72-48fa-a09c-1ffa915824c8)
 
-Purchase ticket:
+Purchasing tickets:
 ![Screenshot 2024-02-17 at 18-55-58 payment](https://github.com/amirHossein5/ticketstore/assets/68776630/cbf1d420-a71b-4f80-87c1-af09a06051ed)
 
 Viewing purchased tickets:
@@ -14,19 +14,11 @@ Viewing ticket orders:
 ![Screenshot 2024-02-17 at 18-56-46 The T20 South Africa vs Australia Orders](https://github.com/amirHossein5/ticketstore/assets/68776630/b68e6411-7b75-424d-b70e-2e28a90e7697)
 
 
-- Sending temporary register link to promoter `php artisan add-promoter {email}`.
-- Promoter creates account using emailed temporary link, then verifies his email.
-- Promoter creates tickets from `/dashboard/tickets/create`.
+- Creating a promoter account using `php artisan add-promoter {email}`, which sends a temporary registeration link to the promoter, then the account gets created after verifying his email.
+- Promoter can create tickets from `/dashboard/tickets/create`.
 - Ticket images are optimized using intervention library.
-- From `/dashboard` promoter can
-    - view
-    - edit
-    - publish
-    - see most recent orders of a ticket
-    - send message to attendees
-- User, purchases published ticket with specified quantity,
-and will be redirected to `/orders/order-code` temporary url,
-to see order information and purchased ticket codes.
+- From `/dashboard` promoter can view, edit, publish, see most recent orders of a ticket, send message to attendees, and etc.
+- User, purchases published tickets with specified quantity, and will get redirected to `/orders/order-code` temporary url to see order information and purchased ticket codes.
 
 ## Installation
 
